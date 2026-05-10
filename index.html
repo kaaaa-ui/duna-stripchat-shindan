@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>配信タイプ診断 | ヅナ</title>
+  <meta name="description" content="5つの質問であなたの配信タイプを診断。エンターテイナー型・癒し系型・カリスマ型・アイドル型 — タイプ別の稼ぎ方戦略付き。" />
+  <meta property="og:title" content="配信タイプ診断 | ヅナ" />
+  <meta property="og:description" content="30秒であなたの配信スタイルがわかる。タイプ別おすすめ戦略付き。" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0f;
+      color: #fff;
+      font-family: 'Noto Sans JP', sans-serif;
+      line-height: 1.7;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 420px; margin: 0 auto; padding: 0 20px; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    ::selection { background: #a855f7; color: #fff; }
+    .text-purple { color: #a855f7; }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168,85,247,0.1);
+    }
+    .header-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 52px;
+    }
+    .logo {
+      font-size: 20px; font-weight: 900;
+      background: linear-gradient(135deg, #a855f7, #06b6d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header-back {
+      font-size: 12px; color: #9ca3af; transition: color 0.3s;
+    }
+    .header-back:hover { color: #a855f7; }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative; padding: 48px 0 32px; text-align: center; overflow: hidden;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(168,85,247,0.2), transparent 50%),
+        radial-gradient(circle at 50% 80%, rgba(6,182,212,0.1), transparent 50%);
+    }
+    .hero-content { position: relative; }
+    .hero-types { font-size: 32px; letter-spacing: 8px; margin-bottom: 12px; }
+    .hero h1 { font-size: 26px; font-weight: 900; line-height: 1.3; margin-bottom: 8px; }
+    .hero p { font-size: 13px; color: #9ca3af; }
+
+    /* ===== QUIZ ===== */
+    .quiz { padding: 0 0 40px; }
+    .progress-wrap { margin-bottom: 12px; }
+    .progress-bar-bg {
+      width: 100%; height: 4px; background: rgba(168,85,247,0.12);
+      border-radius: 4px; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; width: 0%; border-radius: 4px;
+      background: linear-gradient(90deg, #a855f7, #06b6d4);
+      transition: width 0.4s ease;
+    }
+    .q-num {
+      font-size: 11px; color: #06b6d4; font-weight: 700;
+      letter-spacing: 0.05em; margin-bottom: 12px;
+    }
+    .q-card {
+      background: rgba(17,17,24,0.85); backdrop-filter: blur(12px);
+      border: 1px solid rgba(168,85,247,0.2); border-radius: 14px;
+      padding: 28px 22px;
+    }
+    .q-text { font-size: 18px; font-weight: 900; margin-bottom: 20px; line-height: 1.5; }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .opt-btn {
+      width: 100%; text-align: left; padding: 15px 18px; border-radius: 12px;
+      border: 1px solid rgba(168,85,247,0.2); background: rgba(168,85,247,0.04);
+      color: #d1d5db; font-size: 14px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all 0.25s;
+    }
+    .opt-btn:hover {
+      border-color: #a855f7; background: rgba(168,85,247,0.12); color: #fff;
+    }
+    .opt-btn:active { transform: scale(0.98); }
+    .opt-btn.selected {
+      border-color: #a855f7; color: #fff;
+      background: linear-gradient(135deg, rgba(168,85,247,0.3), rgba(6,182,212,0.15));
+    }
+
+    /* ===== RESULT ===== */
+    .result { display: none; padding: 0 0 60px; }
+    .result.show { display: block; }
+
+    .result-type-card {
+      text-align: center; border-radius: 16px; padding: 36px 24px; margin-bottom: 16px;
+      background: rgba(17,17,24,0.85); backdrop-filter: blur(12px);
+      border: 2px solid #a855f7;
+      box-shadow: 0 0 40px rgba(168,85,247,0.15);
+    }
+    .result-emoji { font-size: 56px; margin-bottom: 10px; }
+    .result-name { font-size: 24px; font-weight: 900; color: #a855f7; margin-bottom: 4px; }
+    .result-title { font-size: 14px; color: #9ca3af; }
+
+    .card {
+      background: rgba(17,17,24,0.85); backdrop-filter: blur(12px);
+      border: 1px solid rgba(168,85,247,0.2); border-radius: 14px;
+      padding: 22px; margin-bottom: 14px;
+    }
+    .card h3 { font-size: 15px; font-weight: 900; margin-bottom: 14px; }
+
+    .trait-list li {
+      font-size: 13px; color: #d1d5db; padding: 4px 0 4px 20px; position: relative;
+    }
+    .trait-list li::before {
+      content: '✓'; position: absolute; left: 0; font-weight: 700; font-size: 12px;
+    }
+
+    .strategy-text { font-size: 14px; color: #d1d5db; line-height: 1.8; }
+
+    /* Duna card */
+    .duna-card {
+      background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(6,182,212,0.05));
+      border: 1px solid rgba(168,85,247,0.25); border-radius: 14px;
+      padding: 20px; margin-bottom: 18px;
+    }
+    .duna-inner { display: flex; gap: 14px; align-items: flex-start; }
+    .duna-avatar {
+      width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+      flex-shrink: 0; border: 2px solid rgba(168,85,247,0.3);
+    }
+    .duna-label { font-size: 11px; font-weight: 700; color: #a855f7; display: block; margin-bottom: 4px; }
+    .duna-card p { font-size: 14px; color: #d1d5db; line-height: 1.7; }
+
+    /* LINE CTA */
+    .line-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 16px; border-radius: 999px;
+      background: linear-gradient(90deg, #a855f7, #06b6d4);
+      color: #fff; font-size: 15px; font-weight: 900; margin-bottom: 12px;
+      box-shadow: 0 0 16px rgba(168,85,247,0.5), 0 0 32px rgba(6,182,212,0.3);
+      transition: 0.3s;
+    }
+    .line-cta:hover { transform: translateY(-2px); box-shadow: 0 0 24px rgba(168,85,247,0.6), 0 0 48px rgba(6,182,212,0.4); }
+    .line-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; background: #06C755; border-radius: 6px;
+      font-size: 9px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+
+    /* Actions */
+    .actions { display: flex; gap: 10px; }
+    .share-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 13px; border-radius: 12px; background: #1DA1F2; color: #fff;
+      font-size: 13px; font-weight: 700; transition: 0.3s;
+    }
+    .share-btn:hover { background: #1a8cd8; transform: translateY(-1px); }
+    .retry-btn {
+      flex: 1; padding: 13px; border-radius: 12px;
+      background: rgba(17,17,24,0.85); border: 1px solid rgba(168,85,247,0.2);
+      color: #9ca3af; font-size: 13px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: 0.3s;
+    }
+    .retry-btn:hover { color: #fff; border-color: rgba(168,85,247,0.4); }
+
+    /* Footer */
+    .footer {
+      padding: 20px 0; text-align: center;
+      border-top: 1px solid rgba(168,85,247,0.08);
+    }
+    .footer p { font-size: 11px; color: #333; }
+    .footer .logo { font-size: 16px; margin-bottom: 4px; display: block; }
+
+    /* Fade */
+    .fade-in { opacity: 0; transform: translateY(16px); transition: 0.5s; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    @media (min-width: 768px) {
+      .container { max-width: 520px; }
+      .hero h1 { font-size: 32px; }
+      .q-text { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header-inner">
+      <a href="https://duna-recruit.vercel.app" class="logo">ヅナ</a>
+      <a href="https://duna-recruit.vercel.app" class="header-back">← 求人LPに戻る</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-content fade-in">
+      <div class="hero-types">💎🌸🔥🎀</div>
+      <h1>あなたの<span class="text-purple">配信タイプ</span>は？</h1>
+      <p>5つの質問に答えるだけ。30秒で診断。</p>
+    </div>
+  </section>
+
+  <section class="quiz" id="quiz">
+    <div class="container fade-in">
+      <div class="progress-wrap">
+        <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+      <div class="q-num" id="qNum">Q1 / 5</div>
+      <div class="q-card">
+        <h2 class="q-text" id="qText"></h2>
+        <div class="options" id="options"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="result" id="result">
+    <div class="container">
+      <div class="result-type-card" id="resultCard">
+        <div class="result-emoji" id="resultEmoji"></div>
+        <h2 class="result-name" id="resultName"></h2>
+        <p class="result-title" id="resultTitle"></p>
+      </div>
+
+      <div class="card">
+        <h3>あなたの特徴</h3>
+        <ul class="trait-list" id="traits"></ul>
+      </div>
+
+      <div class="card">
+        <h3>おすすめ戦略</h3>
+        <p class="strategy-text" id="strategy"></p>
+      </div>
+
+      <div class="duna-card">
+        <div class="duna-inner">
+          <img src="duna-avatar.png" alt="ヅナ" class="duna-avatar" />
+          <div>
+            <span class="duna-label">ヅナからのアドバイス</span>
+            <p id="advice"></p>
+          </div>
+        </div>
+      </div>
+
+      <a href="https://line.me/ti/p/-_HTVkpnwn" target="_blank" rel="noopener" class="line-cta">
+        <span class="line-icon">LINE</span>
+        あなたのタイプに合った戦略を相談する
+      </a>
+
+      <div class="actions">
+        <a href="#" target="_blank" rel="noopener" id="shareBtn" class="share-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          シェアする
+        </a>
+        <button id="retryBtn" class="retry-btn">もう一度やる</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <a href="https://duna-recruit.vercel.app" class="logo">ヅナ</a>
+      <p>&copy; 2026 ヅナ All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Fade-in
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+    });
+    document.querySelectorAll('.fade-in').forEach(function(el) { obs.observe(el); });
+
+    // Data
+    var questions = [
+      {
+        text: "初対面の人と話すのは？",
+        opts: [
+          { label: "大好き！すぐ仲良くなれる", s: [2,0,1,1] },
+          { label: "相手に合わせてゆっくり距離を縮める", s: [0,2,0,1] },
+          { label: "自分のペースで話す方が好き", s: [0,0,2,0] },
+          { label: "SNSの方がコミュニケーション得意", s: [0,1,0,2] }
+        ]
+      },
+      {
+        text: "配信で一番大事にしたいことは？",
+        opts: [
+          { label: "みんなで盛り上がる一体感", s: [2,0,1,0] },
+          { label: "一人ひとりとの深い繋がり", s: [0,2,0,0] },
+          { label: "自分のスタイルを貫くこと", s: [0,0,2,1] },
+          { label: "ファンが増えていく実感", s: [1,0,0,2] }
+        ]
+      },
+      {
+        text: "理想の収益スタイルは？",
+        opts: [
+          { label: "イベントやゴールで一気に稼ぐ", s: [2,0,1,0] },
+          { label: "常連さんからの安定収入", s: [0,2,0,0] },
+          { label: "少数の太客から高単価", s: [0,0,2,0] },
+          { label: "フォロワー数×グッズ・特典販売", s: [0,0,0,2] }
+        ]
+      },
+      {
+        text: "休日の過ごし方は？",
+        opts: [
+          { label: "友達と遊ぶ・イベントに行く", s: [2,0,0,1] },
+          { label: "家でまったり過ごす", s: [0,2,0,0] },
+          { label: "自分磨き（ジム・勉強・美容）", s: [0,0,2,1] },
+          { label: "SNS更新・写真撮影", s: [0,0,0,2] }
+        ]
+      },
+      {
+        text: "自分の強みは？",
+        opts: [
+          { label: "トーク力・場を盛り上げる力", s: [2,0,1,0] },
+          { label: "聞き上手・安心感がある", s: [0,2,0,0] },
+          { label: "オーラ・存在感がある", s: [0,0,2,0] },
+          { label: "ビジュアル・キャラ作りが上手", s: [0,0,0,2] }
+        ]
+      }
+    ];
+
+    var types = [
+      {
+        emoji: "💎", name: "エンターテイナー型", title: "盛り上げの天才", color: "#a855f7",
+        traits: ["ゴール設定での爆発力が強い","チャット欄を巻き込むのが上手い","イベント・企画で高収益を出せる","ムードメーカーで新規も定着しやすい"],
+        strategy: "チップメニュー充実×ゴール企画を毎回設定。イベント参加で一気に順位UP。盛り上がりを動画でSNSにシェアして新規も呼び込もう。",
+        advice: "あなたの武器は「場を作る力」。ゴール設定は必ず毎回やろう。イベント時は配信時間を延長して、一気にランキング駆け上がれ！"
+      },
+      {
+        emoji: "🌸", name: "癒し系型", title: "常連がつく安定型", color: "#f9a8d4",
+        traits: ["リピーター率が非常に高い","プライベートショーとの相性抜群","一人ひとりを大切にするスタイル","長時間配信でも疲れにくい"],
+        strategy: "プライベートショーを主力に。ファンクラブで限定コンテンツを配信。常連さんとのDMコミュニケーションで離脱を防ぐ。",
+        advice: "あなたの強みは「また来たい」と思わせる力。プライベートの時間単価を上げていこう。常連10人つけば安定月収20万は固い！"
+      },
+      {
+        emoji: "🔥", name: "カリスマ型", title: "短時間で高収益", color: "#ef4444",
+        traits: ["独自の世界観でファンを魅了","少数の熱狂的ファンがつく","高額チップ・ギフトを引き出せる","ブランディング力が高い"],
+        strategy: "配信時間より質重視。ファンクラブを早めに開設し、限定感を演出。プレミアム感のあるプロフィール・アルバム作りに注力。",
+        advice: "質で勝負できるのは最強。ファンクラブの月額を少し高めに設定しても大丈夫。あなたについてくるファンは「特別感」に課金する人たちだ。"
+      },
+      {
+        emoji: "🎀", name: "アイドル型", title: "SNS連携の新規獲得マシン", color: "#a855f7",
+        traits: ["SNSからの流入が多い","ビジュアル力でフォロワーが増える","新規獲得→ファン化の導線が強い","マルチプラットフォーム展開向き"],
+        strategy: "X・Instagram・TikTokとの連携を最大化。配信のハイライトをショート動画に。アルバム更新を頻繁に行い、プロフ誘導を強化。",
+        advice: "SNSの力を最大限使おう。配信前の告知、配信後のハイライト投稿は必ずやること。フォロワー1000人超えたら収益が一気に加速するよ！"
+      }
+    ];
+
+    var currentQ = 0;
+    var scores = [0,0,0,0]; // e,h,c,i
+
+    var quizEl = document.getElementById('quiz');
+    var resultEl = document.getElementById('result');
+
+    function render() {
+      var q = questions[currentQ];
+      document.getElementById('progressBar').style.width = (currentQ / questions.length * 100) + '%';
+      document.getElementById('qNum').textContent = 'Q' + (currentQ + 1) + ' / ' + questions.length;
+      document.getElementById('qText').textContent = q.text;
+      var optEl = document.getElementById('options');
+      optEl.innerHTML = '';
+      q.opts.forEach(function(o, i) {
+        var btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = o.label;
+        btn.onclick = function() { answer(i); };
+        optEl.appendChild(btn);
+      });
+    }
+
+    function answer(i) {
+      var btns = document.querySelectorAll('.opt-btn');
+      btns.forEach(function(b) { b.disabled = true; });
+      btns[i].classList.add('selected');
+      var s = questions[currentQ].opts[i].s;
+      scores[0] += s[0]; scores[1] += s[1]; scores[2] += s[2]; scores[3] += s[3];
+      setTimeout(function() {
+        currentQ++;
+        if (currentQ < questions.length) { render(); }
+        else { showResult(); }
+      }, 300);
+    }
+
+    function showResult() {
+      var maxIdx = 0;
+      scores.forEach(function(v, i) { if (v > scores[maxIdx]) maxIdx = i; });
+      var r = types[maxIdx];
+
+      quizEl.style.display = 'none';
+      document.querySelector('.hero').style.display = 'none';
+      resultEl.classList.add('show');
+
+      document.getElementById('resultEmoji').textContent = r.emoji;
+      document.getElementById('resultName').textContent = r.name;
+      document.getElementById('resultName').style.color = r.color;
+      document.getElementById('resultCard').style.borderColor = r.color;
+      document.getElementById('resultCard').style.boxShadow = '0 0 40px ' + r.color + '25';
+      document.getElementById('resultTitle').textContent = r.title;
+
+      var traitsEl = document.getElementById('traits');
+      traitsEl.innerHTML = '';
+      r.traits.forEach(function(t) {
+        var li = document.createElement('li');
+        li.textContent = t;
+        li.style.setProperty('--check-color', r.color);
+        traitsEl.appendChild(li);
+      });
+      traitsEl.querySelectorAll('li').forEach(function(li) {
+        li.style.cssText += '; --c:' + r.color;
+      });
+
+      document.getElementById('strategy').textContent = r.strategy;
+      document.getElementById('advice').textContent = r.advice;
+
+      var shareText = '配信タイプ診断の結果は「' + r.emoji + ' ' + r.name + '」でした！\n' + r.title + '\n\n30秒で診断できる👇';
+      document.getElementById('shareBtn').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('retryBtn').onclick = function() {
+      currentQ = 0;
+      scores = [0,0,0,0];
+      resultEl.classList.remove('show');
+      quizEl.style.display = '';
+      document.querySelector('.hero').style.display = '';
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    render();
+  </script>
+</body>
+</html>
